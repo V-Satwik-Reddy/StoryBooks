@@ -7,7 +7,7 @@ Installation & Setup
 *1. Prerequisites 
 Ensure you have the following installed:  
 - Node.js (Latest LTS version) - [https://nodejs.org/](https://nodejs.org/)  
-- MongoDB (Cloud or local setup) - [https://www.mongodb.com/](https://www.mongodb.com/)  
+- MongoDB (Cloud or local setup) - [https://www.mongodb.com/](https://www.mongodb.com/)  (if you are using local setup else connection tring is enough)
 
 2. Clone the Repository 
 Run the following commands:  
