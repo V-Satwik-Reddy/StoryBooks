@@ -12,7 +12,7 @@ Ensure you have the following installed:
 2. Clone the Repository 
 Run the following commands:  
 ```
-git clone <your-repo-url>
+git clone https://github.com/V-Satwik-Reddy/StoryBooks
 cd StoryBook
 ```
 
