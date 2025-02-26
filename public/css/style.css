@@ -1,0 +1,50 @@
+.login-container {
+    width: 400px;
+    margin-top: 50px;
+    text-align: center;
+}
+p{
+    margin: 10px 0 !important
+}
+.fa-small {
+    font-size: 20px !important;
+    margin-bottom: 20px;
+}
+.btn-float {
+    float: left;
+    margin-right:  10px;
+}
+.img-small{
+    width: 180px;
+}
+.card {
+    height: 350px; /* Set a fixed height for all story cards */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-content {
+    flex-grow: 1; /* Makes sure content fills available space */
+    /*overflow: hidden;*/
+}
+
+.card h5 {
+    min-height: 50px; /* Ensures all titles take up the same space */
+}
+
+.card-action {
+    padding-top: 10px;
+}
+.story-card {
+    height: 100%;
+    max-width: 900px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.chip{
+    margin-right: 30%;
+    margin-left: 30%;
+    text-align: center;
+}
+

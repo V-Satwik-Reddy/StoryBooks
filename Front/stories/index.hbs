@@ -1,0 +1,68 @@
+<h1>Stories</h1>
+<ul class="search-form">
+    <li>    
+        <form id="search-site" action='/stories/search' method='get'>
+            <div class="input-group">
+                    <i class="fas fa-search fa-large" ></i>
+                    <div class="input-field">
+                    <input id="search" type="search" name='query' placeholder="Search by title">
+                    <label class="label-icon" for="search">
+                    </label>
+                 </div>
+                <button type="submit" class="input-group-addon btn black">search</button>
+            </div>
+            
+        </form>  
+    </li>   
+</ul>
+<form id="sort-form" action="/stories" method="get">
+    <label for="sort">Sort by:</label>
+    <select id="sort" name="sort">
+        <option value="recent">Most Recent</option>
+        <option value="likes">Most Liked</option>
+        <option value="trending">Trending (Likes in last 24h)</option>
+        <option value="views">Most Viewed</option>
+    </select>
+    <button type="submit" class="btn">Sort</button>
+</form>
+
+<div class="row">
+    {{#each stories}}
+    <div class="col s12 m4">
+        <div class="card">
+            <div class="card-image ">
+                {{{editIcon user ../user _id}}}
+            </div>
+        <div class="card-content center-align">
+            <h5>{{title}}</h5>
+            <p>{{truncate (stripTags body) 120}}</p>
+            <br>
+        </div>
+        
+            <div class="chip">
+                <img src="{{user.image}}" alt="">
+                 <a href="/stories/user/{{user._id}}">{{user.displayName}}</a>
+            </div>
+    <div class="card-action center-align" style="display: flex; justify-content: space-between; align-items: center;">
+
+        {{! likes }}
+        <div class="likes-dislikes" style="font-size: 1.5rem; margin-right: 10px;">
+            👍 <span id="like-count-{{_id}}">{{#if likes.length}}   {{likes.length}}{{else}}0{{/if}}</span>
+        </div>
+        {{! readmore button }}
+
+        <a href="/stories/{{_id}}" class="btn grey">Read More</a>
+
+        {{! dislikes }}
+        <div class="likes-dislikes" style="font-size: 1.5rem; margin-left: 10px;">
+            👎 <span id="dislike-count-{{_id}}">{{#if dislikes.length}}{{dislikes.length}}{{else}}0{{/if}}</span>
+        </div>
+    </div>
+</div>
+
+</div>
+
+    {{else}}
+    <p>No stories to display</p>
+    {{/each}}
+</div>

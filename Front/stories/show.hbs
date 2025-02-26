@@ -1,0 +1,52 @@
+<div class="row">
+    <!-- Story Card -->
+    <div class="col s12 m8">
+        <div class="card story-card">
+            <div class="card-content">
+                <span class="card-title">{{stories.title}}
+                    <span class="right grey-text text-small" style="font-size: 1.1rem;"> {{stories.views}} Views</span>
+                </span>
+                <p class="story-meta">Published on {{formatDate stories.createdAt 'MMMM Do YYYY, h:mm:ss a'}}</p>
+                <p>{{{stories.body}}}</p>
+            </div>
+            <div class="card-action">
+                <button id="like-btn" class="btn green" data-id="{{stories._id}}">
+                    👍 Like <span id="like-count">{{stories.likes.length}}</span>
+                </button>
+                <button id="dislike-btn" class="btn red" data-id="{{stories._id}}">
+                    👎 Dislike <span id="dislike-count">{{stories.dislikes.length}}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Author Info Card -->
+    <div class="col s12 m4">
+        <div class="card center-align">
+            <div class="card-content">
+                <span class="card-title">{{stories.user.displayName}}</span>
+                <img src="{{stories.user.image}}" class="circle responsive-img img-small">
+            </div>
+            <div class="card-action">
+                <a href="/stories/user/{{stories.user._id}}">More From {{stories.user.firstName}}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Comment Section -->
+ <div class="card">
+    <div class="card-content">
+        <h5>Comments</h5>
+        <ul>
+            {{#each stories.comments}}
+                <li><strong>{{this.user.displayName}}:</strong> {{this.text}}</li>
+            {{/each}}
+        </ul>
+        <form action="/stories/comment/{{stories._id}}" method="POST">
+            <textarea name="text" required></textarea>
+            <button type="submit" class="btn blue">Add Comment</button>
+        </form>
+    </div>
+</div>
