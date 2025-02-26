@@ -13,7 +13,7 @@ Ensure you have the following installed:
 Run the following commands:  
 ```
 git clone https://github.com/V-Satwik-Reddy/StoryBooks
-cd StoryBook
+cd StoryBooks
 ```
 
 3. Install Dependencies
