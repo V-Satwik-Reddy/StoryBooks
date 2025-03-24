@@ -35,9 +35,9 @@ app.use(
 )
 
 //logging
-if(process.env.NODE_ENV === 'development'){
+
     app.use(morgan('dev'));
-}
+
 
 //handlebars helpers
 const {formatDate,stripTags,truncate,editIcon,select} = require('./helpers/hbs');
