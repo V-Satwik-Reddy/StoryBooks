@@ -4,7 +4,10 @@ const Redis=require('ioredis');
 const redis=new Redis(process.env.REDIS_URL);
 const Story=require('../store/story');
 const router = express.Router();
-
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const redisClient = new Redis(process.env.REDIS_URL);
+const {ensureAuth,ensureGuest} = require('../middleware/auth');
 
 //login request to goolge for the user
 router.get('/google',passport.authenticate('google',{scope:['profile','email']}));
@@ -24,14 +27,15 @@ router.get('/google/callback',passport.authenticate('google',{failureRedirect:'/
 });
 
 //logout
-router.get('/logout', async (req, res, next) => {
-    await redis.del(req.user.email);
+router.get('/logout',ensureAuth,async (req, res, next) => {
+    await redisClient.del(`user:${req.user.id}`); // Remove user session from Redis
     req.logout(function (err) {
-        if (err) {
-            return next(err);
-        }
-        res.redirect('/');
+        if (err) return next(err);
+        req.session.destroy(() => {
+            res.redirect('/');
+        });
     });
 });
+
 
 module.exports = router;
