@@ -16,7 +16,8 @@ router.get('/', ensureGuest, (req,res)=>{
 router.get('/dashboard',ensureAuth,async (req,res)=>{
     try{
         const storykeys=await redis.hkeys(req.user.email);
-        if(storykeys){
+        if(storykeys.length>0){
+            console.log("from redis",storykeys);
             let stories=[];
             const pipeline=redis.pipeline();
             for(const key of storykeys){
