@@ -69,10 +69,6 @@ app.use(session({
   }
 }));
 
-console.log("mounesh learned this");
-
-console.log("mounesh learn");
-console.log("i am mounesh");
 
 //passoe middleware
 app.use(passport.initialize());
