@@ -8,8 +8,10 @@ const passport=require('passport');
 const session=require('express-session')
 const MongoStore = require('connect-mongo');
 const methodOverride = require('method-override');
-
+const RedisStore = require('connect-redis')(session);
+const Redis = require('ioredis');
 const mongoose = require('mongoose');
+
 dotenv.config({path: './config/config.env'});
 
 require('./config/passport')(passport);
@@ -52,15 +54,22 @@ app.set('views', path.join(__dirname, 'Front'));
 app.set('view engine', '.hbs');
 
 // session
+const redisClient = new Redis(process.env.REDIS_URL);
+
+// Configure session middleware with Redis
 app.use(session({
-  secret: 'keyboard cat',
+  store: new RedisStore({ client: redisClient, ttl: 86400 }),
+  secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false, 
-  store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI,
-      ttl: 24 * 60 * 60 // Session expires in 24 hours (TTL in seconds)
-  })
+  saveUninitialized: false,
+  cookie: {
+      secure: false, // set to true if using HTTPS
+      httpOnly: true,
+      maxAge: 86400000,
+  }
 }));
+
+
 
 
 //passoe middleware

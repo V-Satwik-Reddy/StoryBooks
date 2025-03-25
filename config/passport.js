@@ -2,7 +2,11 @@ const passport = require('passport');
 const GoogleStategy = require('passport-google-oauth20').Strategy;
 const mongoose = require('mongoose');  
 const User = require('../store/User');
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const Redis = require('ioredis');
 
+const redisClient = new Redis(process.env.REDIS_URL);
 module.exports = function(passport){
     passport.use(new GoogleStategy({
         clientID:process.env.GOOGLE_CLIENT_ID,
@@ -31,16 +35,32 @@ module.exports = function(passport){
             console.error(err)
         }
     }))
-    passport.serializeUser((user,done) => {
-        done(null,user.id);
-    })
+    passport.serializeUser((user, done) => {
+        done(null, user.id); // Store user ID in Redis
+    });
+    
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await User.findById(id);
-            done(null, user);
+            const userData = await redisClient.hgetall(`user:${id}`); // Fetch from Redis
+            if (userData && Object.keys(userData).length > 0) {
+                return done(null, userData); // Use Redis-stored session
+            }
+            const user = await User.findById(id); // Fallback to DB if not in Redis
+            if (user) {
+                await redisClient.hmset(`user:${id}`, {
+                    id: user.id,
+                    email: user.email,
+                    displayName: user.displayName,
+                    image: user.image
+                });
+                await redisClient.expire(`user:${id}`, 86400); // Expire in 1 day
+                return done(null, user);
+            }
+            done(null, false);
         } catch (err) {
             done(err, null);
         }
     });
+    
     
 }
