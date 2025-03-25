@@ -7,22 +7,20 @@
 
 <div class="divider"></div>
 
-<!-- Google Login -->
-<div class="section">
-    <a href="/auth/google" class="btn red darken-1">
-        <i class="fab fa-google left"></i> Log In With Google
-    </a>
-</div>
-
-<div class="divider"></div>
 
 <!-- Email/Password Login -->
 <div class="section">
-    <form action="/auth/login" method="POST">
+    <form action="/auth/signup" method="POST">
         <div class="input-field">
             <i class="fas fa-envelope prefix"></i>
             <input type="email" name="email" id="email" required>
             <label for="email">Email</label>
+        </div>
+
+        <div class="input-field">   
+            <i class="fas fa-user prefix"></i>
+            <input type="text" name="username" id="username" required>
+            <label for="username">Username</label>
         </div>
 
         <div class="input-field">
@@ -32,15 +30,10 @@
         </div>
 
         <button type="submit" class="btn blue darken-1">
-            <i class="fas fa-sign-in-alt left"></i> Log In
+            <i class="fas fa-sign-in-alt left"></i> Sign Up
         </button>
     </form>
 </div>
 
-<div class="divider"></div>
-
-<!-- Signup Option -->
-<div class="section">
-    <p>Don't have an account? <a href="/auth/sren" class="blue-text">Sign Up</a></p>
 </div>
 </div>
