@@ -7,7 +7,7 @@ const router = express.Router();
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const redisClient = new Redis(process.env.REDIS_URL);
-const {ensureAuth,ensureGuest} = require('../middleware/auth');
+const {ensureAuthapi,ensureGuestapi} = require('../middleware/apiauth');
 const bcrypt=require('bcryptjs');
 const User=require('../store/User');
 const story=require('../store/story');
@@ -22,12 +22,8 @@ router.get('/google/callback',passport.authenticate('google',{failureRedirect:'/
 
     return res.redirect("/dashboard");
 });
-//sren
-router.get("/sren",ensureGuest,(req,res)=>{
-    res.render("SignUp", { layout: "login" });
-})
 // User Signup
-router.post("/signup", async (req, res, next) => {
+router.post("/signup", ensureGuestapi,async (req, res, next) => {
     const { email, password, username } = req.body;
 
     try {
@@ -52,10 +48,10 @@ router.post("/signup", async (req, res, next) => {
 });
 
 //email login
-router.post("/login", (req, res, next) => {
+router.post("/login",ensureGuestapi, (req, res, next) => {
     passport.authenticate("local", async (err, user, info) => {
         if (err) return next(err);
-        if (!user) return res.redirect("/login");
+        if (!user) return res.json({ message: info.message });
 
         req.login(user, async (err) => {
             if (err) return next(err);
@@ -67,7 +63,7 @@ router.post("/login", (req, res, next) => {
 });
 
 //logout
-router.get('/logout',ensureAuth,async (req, res, next) => {
+router.get('/logout',ensureAuthapi,async (req, res, next) => {
     await redisClient.del(`user:${req.user.id}`); // Remove user session from Redis
     req.logout(function (err) {
         if (err) return next(err);
