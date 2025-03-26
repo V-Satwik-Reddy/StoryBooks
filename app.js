@@ -91,6 +91,8 @@ app.use(setPageTitle);
 app.use('/',require('./routes/index'))
 app.use('/auth',require('./routes/auth'))
 app.use('/stories',require('./routes/stories'))
-
+app.use('/api/auth',require('./routes/apiauth'))
+app.use('/api/dashboard',require('./routes/apidashboard'))
+app.use('/api/public',require('./routes/apipublic'))
 const PORT = process.env.PORT || 5000;
 app.listen(PORT,console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}`));
