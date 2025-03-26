@@ -13,7 +13,7 @@ router.get('/',ensureAuthapi,async (req,res)=>{
     try{
         const storykeys=await redis.hkeys(req.user.email);
         if(storykeys.length>0){
-            console.log("from redis",storykeys);
+            console.log("from redis");
             let stories=[];
             const pipeline=redis.pipeline();
             for(const key of storykeys){
@@ -31,6 +31,7 @@ router.get('/',ensureAuthapi,async (req,res)=>{
             });
         }
         const stories=await story.find({user:req.user.id}).lean();
+        await redis.hset(req.user.email,`story${stories._id}`,JSON.stringify(stories));
         res.json({
             name: req.user.displayName,
             stories,
