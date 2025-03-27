@@ -24,14 +24,14 @@ router.get('/',ensureAuthapi,async (req,res)=>{
                     stories.push(JSON.parse(data));
                 }
             }
-            return  res.json({
+            return  res.json({message:"from redis",
                 name: req.user.displayName,
                 stories,
             });
         }
         const stories=await story.find({user:req.user.id}).lean();
         await storeUserStoriesInRedis(req.user,stories);
-        res.json({
+        res.json({message:"from mongodb",
             name: req.user.displayName,
             stories,
         });
