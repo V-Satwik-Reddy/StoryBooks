@@ -79,7 +79,7 @@ async function storeUserStoriesInRedis(user) {
     const pipeline = redis.pipeline();
     
     for (const story of stories) {
-        pipeline.hset(user.email, `story${story._id}`, JSON.stringify(story));
+        pipeline.hset(user.email, story._id, JSON.stringify(story));
     }
     
     pipeline.expire(user.email, 3600); // Set expiry correctly

@@ -2,7 +2,6 @@ const express = require('express');
 const Redis=require('ioredis');
 const redis=new Redis(process.env.REDIS_URL);
 const router = express.Router();
-const session = require('express-session');
 const {ensureAuthapi}=require('../middleware/apiauth');
 const User=require('../store/User');
 const story=require('../store/story');
@@ -31,7 +30,7 @@ router.get('/',ensureAuthapi,async (req,res)=>{
             });
         }
         const stories=await story.find({user:req.user.id}).lean();
-        await redis.hset(req.user.email,`story${stories._id}`,JSON.stringify(stories));
+        await storeUserStoriesInRedis(req.user,stories);
         res.json({
             name: req.user.displayName,
             stories,
@@ -42,4 +41,14 @@ router.get('/',ensureAuthapi,async (req,res)=>{
     }
 });
 
+async function storeUserStoriesInRedis(user,stories) {
+    const pipeline = redis.pipeline();
+    
+    for (const story of stories) {
+        pipeline.hset(user.email, story._id, JSON.stringify(story));
+    }
+    
+    pipeline.expire(user.email, 3600); // Set expiry correctly
+    await pipeline.exec();
+}
 module.exports = router;
