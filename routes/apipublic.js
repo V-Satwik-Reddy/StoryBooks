@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const {ensureAuthapi} = require('../middleware/apiauth');
 const story = require('../store/story');
-const User = require('../store/User');
 const Redis=require('ioredis');
 const redis=new Redis(process.env.REDIS_URL);
 
@@ -14,6 +13,7 @@ router.get('/', ensureAuthapi, async (req, res) => {
         const storykeys = await redis.hkeys("public");
 
         if (storykeys.length > 0) {
+            console.log("from redis");
             let stories = await convertRedisData(storykeys, "public");
 
             // Ensure stories is not nested inside another array
@@ -34,10 +34,10 @@ router.get('/', ensureAuthapi, async (req, res) => {
 
                 let trendingStories = stories.filter(story => new Date(story.createdAt) >= yesterday);
                 trendingStories.sort((a, b) => (b.likes.length || 0) - (a.likes.length || 0));
-                return res.json({ stories: trendingStories });
+                return res.json({  message:"from redis",stories: trendingStories });
             }
 
-            return res.json({ stories });
+            return res.json({ message:"from redis",stories });
         }
 
         // If no stories in Redis, fetch from MongoDB
@@ -60,9 +60,9 @@ router.get('/', ensureAuthapi, async (req, res) => {
             .sort({ likes: -1 }) // Sort by most liked
             .lean();
 
-            return res.json({ stories: trendingStories });
+            return res.json({ message:"from mongodb",stories: trendingStories });
         }
-
+        console.log("from mongodb");
         const stories = await story.find({ status: 'public' })
             .populate('user', 'displayName image')
             .sort(sortQuery)
@@ -71,12 +71,12 @@ router.get('/', ensureAuthapi, async (req, res) => {
         // Store in Redis
         const pipeline = redis.pipeline();
         for (const stori of stories) {
-            await pipeline.hset("public", `${stori._id}`, JSON.stringify(stori));
+            await pipeline.hset("public", stori._id, JSON.stringify(stori));
         }
         await pipeline.expire("public", 3600);
         await pipeline.exec();
 
-        res.json({ stories });
+        res.json({message:"from mongodb", stories });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -91,6 +91,7 @@ router.get('/search', ensureAuthapi, async (req, res) => {
         const storykeys = await redis.hkeys("public");
 
         if (storykeys.length > 0) {
+            console.log("from redis");
             let stories = await convertRedisData(storykeys, "public");
             if (Array.isArray(stories) && stories.length > 0 && Array.isArray(stories[0])) {
                 stories = stories[0]; // Extract the inner array
@@ -101,7 +102,7 @@ router.get('/search', ensureAuthapi, async (req, res) => {
 
             stories = stories.filter(story => story.title && story.title.toLowerCase().includes(query));
 
-            return res.json({ stories });
+            return res.json({message:"from redis", stories });
         }
 
 
@@ -117,40 +118,12 @@ router.get('/search', ensureAuthapi, async (req, res) => {
         .lean();
 
         res.json({
+            message:"from mongodb",
             stories,
         });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
-    }
-});
-
-
-//show the story content
-router.get('/:id', ensureAuthapi, async (req,res)=>{
-    try{
-        let storykeys=await redis.hget("public",req.params.id);
-        if(storykeys){
-            let stories=JSON.parse(storykeys);
-            stories.views++;
-            await redis.hset("public",req.params.id,JSON.stringify(stories));
-            return res.json({ stories });
-        }
-        
-        let stories = await story.findById(req.params.id)
-        .lean()
-        .populate('user');
-
-        if (!stories) 
-            return res.status(404).json({ message: 'Story not found' });
-
-        await story.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } });
-        await redis.hset("public",req.params.id,JSON.stringify(stories));
-        res.json({ stories });
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message:"Server Error"});
     }
 });
 
