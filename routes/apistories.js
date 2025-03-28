@@ -118,21 +118,28 @@ router.get('/edit/:id', ensureAuthapi, async (req,res)=>{
 //delete story
 router.delete('/:id', ensureAuthapi, async (req, res) => {
     try {
+        const storie=await redis.hget(req.user.email,req.params.id);
+        if(storie){
+            await redis.hdel(req.user.email,req.params.id);
+            await redis.hdel("public",req.params.id);
+            await story.deleteOne({ _id: req.params.id });
+            return res.json({message:"Story deleted from redis"});
+        }
       let stories = await story.findById(req.params.id).lean()
   
       if (!stories) {
-        return res.render('error/404')
+        return res.status(404).json({message:"Story not found"});
       }
   
       if (stories.user != req.user.id) {
-        res.redirect('/stories')
+        return res.status(404).json({message:"Not Authorized"});
       } else {
         await story.deleteOne({ _id: req.params.id })
-        res.redirect('/dashboard')
+        return res.json({message:"Story deleted from mongodb"});
       }
     } catch (err) {
       console.error(err)
-      return res.render('error/500')
+      return res.status(500).json({message:"Server Error"});
     }
   })
 module.exports = router;
