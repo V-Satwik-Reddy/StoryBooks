@@ -65,6 +65,7 @@ router.post("/login",ensureGuestapi, (req, res, next) => {
 //logout
 router.get('/logout',ensureAuthapi,async (req, res, next) => {
     await redisClient.del(`user:${req.user.id}`); // Remove user session from Redis
+    await redis.del(req.user.email); // Remove user stories from 
     req.logout(function (err) {
         if (err) return next(err);
         req.session.destroy(() => {

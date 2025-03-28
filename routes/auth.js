@@ -68,6 +68,7 @@ router.post("/login", (req, res, next) => {
 //logout
 router.get('/logout',ensureAuth,async (req, res, next) => {
     await redisClient.del(`user:${req.user.id}`); // Remove user session from Redis
+    await redis.del(req.user.email);
     req.logout(function (err) {
         if (err) return next(err);
         req.session.destroy(() => {
