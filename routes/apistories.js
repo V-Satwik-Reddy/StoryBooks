@@ -6,6 +6,8 @@ const User = require('../store/User');
 const Redis=require('ioredis');
 const redis=new Redis(process.env.REDIS_URL);
 const cron = require('node-cron');// Sync likes, dislikes, and comments from Redis to MongoDB every 5 minutes
+const Story = require('../store/story'); // Import the Mongoose model
+
 cron.schedule('*/5 * * * *', async () => {
     try {
         const storyIds = await redis.hkeys("public"); // Get all story keys in Redis
@@ -14,11 +16,13 @@ cron.schedule('*/5 * * * *', async () => {
             let storyData = await redis.hget("public", storyId);
             if (!storyData) continue;
 
-            let story = JSON.parse(storyData);
-            await story.findByIdAndUpdate(storyId, {
-                likes: story.likes,
-                dislikes: story.dislikes,
-                comments: story.comments
+            let parsedStory = JSON.parse(storyData);
+            
+            // Use the Mongoose model to update the story in MongoDB
+            await Story.findByIdAndUpdate(storyId, {
+                likes: parsedStory.likes,
+                dislikes: parsedStory.dislikes,
+                comments: parsedStory.comments
             });
         }
 
@@ -27,6 +31,7 @@ cron.schedule('*/5 * * * *', async () => {
         console.error("❌ Error syncing Redis data to MongoDB:", err);
     }
 });
+
 
 //add
 router.post('/add', ensureAuthapi, async (req,res)=>{
