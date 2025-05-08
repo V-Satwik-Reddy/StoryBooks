@@ -1,5 +1,5 @@
 
-````markdown
+
 # 📘 API Documentation
 
 Welcome to the API documentation. This guide outlines all available endpoints, their purposes, and required data for interaction.
@@ -32,7 +32,6 @@ Registers a new user.
     "password": "yourPassword",
     "username": "yourUsername"
   }
-````
 
 ---
 
