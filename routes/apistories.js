@@ -5,12 +5,12 @@ const story = require('../store/story');
 const User = require('../store/User');
 const Redis=require('ioredis');
 const redis=new Redis(process.env.REDIS_URL);
-const cron = require('node-cron');// Sync likes, dislikes, and comments from Redis to MongoDB every 5 minutes
-const Story = require('../store/story'); // Import the Mongoose model
+const cron = require('node-cron');
+const Story = require('../store/story'); 
 
 cron.schedule('*/5 * * * *', async () => {
     try {
-        const storyIds = await redis.hkeys("public"); // Get all story keys in Redis
+        const storyIds = await redis.hkeys("public"); 
 
         for (const storyId of storyIds) {
             let storyData = await redis.hget("public", storyId);
@@ -18,7 +18,6 @@ cron.schedule('*/5 * * * *', async () => {
 
             let parsedStory = JSON.parse(storyData);
             
-            // Use the Mongoose model to update the story in MongoDB
             await Story.findByIdAndUpdate(storyId, {
                 likes: parsedStory.likes,
                 dislikes: parsedStory.dislikes,
