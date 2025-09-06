@@ -1,119 +1,53 @@
-Title
-===
-Abstract:xxx
-## Papar Information
-- Title:  `paper name`
-- Authors:  `A`,`B`,`C`
-- Preprint: [https://arxiv.org/abs/xx]()
-- Full-preprint: [paper position]()
-- Video: [video position]()
+StoryBook
 
-## Install & Dependence
-- python
-- pytorch
-- numpy
+A Node.js-based application using Express, MongoDB, and Handlebars for authentication and story management.  
 
-## Dataset Preparation
-| Dataset | Download |
-| ---     | ---   |
-| dataset-A | [download]() |
-| dataset-B | [download]() |
-| dataset-C | [download]() |
+Installation & Setup
 
-## Use
-- for train
-  ```
-  python train.py
-  ```
-- for test
-  ```
-  python test.py
-  ```
-## Pretrained model
-| Model | Download |
-| ---     | ---   |
-| Model-1 | [download]() |
-| Model-2 | [download]() |
-| Model-3 | [download]() |
+*1. Prerequisites 
+Ensure you have the following installed:  
+- Node.js (Latest LTS version) - [https://nodejs.org/](https://nodejs.org/)  
+- MongoDB (Cloud or local setup) - [https://www.mongodb.com/](https://www.mongodb.com/)  (if you are using local setup else connection tring is enough)
 
+2. Clone the Repository 
+Run the following commands:  
+```
+git clone https://github.com/V-Satwik-Reddy/StoryBooks
+cd StoryBooks
+```
 
-## Directory Hierarchy
+3. Install Dependencies
+Run the following command:  
 ```
-|—— .gitignore
-|—— app.js
-|—— config
-|    |—— config.env
-|    |—— db.js
-|    |—— passport.js
-|—— Front
-|    |—— dashboard.hbs
-|    |—— Design
-|        |—— home.hbs
-|        |—— login.hbs
-|    |—— error
-|        |—— 404.hbs
-|        |—— 500.hbs
-|    |—— Login.hbs
-|    |—— partials
-|        |—— _add_btn.hbs
-|        |—— _header.hbs
-|    |—— SignUp.hbs
-|    |—— stories
-|        |—— add.hbs
-|        |—— edit.hbs
-|        |—— index.hbs
-|        |—— show.hbs
-|—— helpers
-|    |—— hbs.js
-|—— middleware
-|    |—— apiauth.js
-|    |—— auth.js
-|    |—— setPageTitle.js
-|—— package-lock.json
-|—— package.json
-|—— public
-|    |—— css
-|        |—— style.css
-|    |—— js
-|        |—— story.js
-|—— routes
-|    |—— apiauth.js
-|    |—— apidashboard.js
-|    |—— apipublic.js
-|    |—— apistories.js
-|    |—— auth.js
-|    |—— index.js
-|    |—— stories.js
-|—— store
-|    |—— story.js
-|    |—— User.js
-|—— users.csv
+npm install
 ```
-## Code Details
-### Tested Platform
-- software
-  ```
-  OS: Debian unstable (May 2021), Ubuntu LTS
-  Python: 3.8.5 (anaconda)
-  PyTorch: 1.7.1, 1.8.1
-  ```
-- hardware
-  ```
-  CPU: Intel Xeon 6226R
-  GPU: Nvidia RTX3090 (24GB)
-  ```
-### Hyper parameters
-```
-```
-## References
-- [paper-1]()
-- [paper-2]()
-- [code-1](https://github.com)
-- [code-2](https://github.com)
-  
-## License
+`npm install express dotenv mongoose morgan express-handlebars passport express-session connect-mongo method-override`
 
-## Citing
-If you use xxx,please use the following BibTeX entry.
-```
-```
+4. Setup Environment Variables
+    replace the exmaple uri in config\config.env with your own mongo uri,google_client id and google_client secret
+
+5. Start the Application 
+- For production mode:  
+  ```
+  npm start
+  ```
+- For development mode (auto-reloading with nodemon):  
+  ```
+  npm run dev
+  ```
+
+Tech Stack  
+- Backend: Node.js, Express.js  
+- Database:** MongoDB (Mongoose ODM)  
+- Templating Engine: Handlebars  
+- Authentication: Passport.js  
+- Session Handling: Express-Session & Connect-Mongo  
+
+Features  
+- User authentication with Passport.js  
+- CRUD operations for stories  
+- Session-based authentication  
+- Templating with Handlebars  
+
+Contact  
+If you face any issues, feel free to raise an issue or reach out.  
